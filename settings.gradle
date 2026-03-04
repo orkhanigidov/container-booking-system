@@ -1,0 +1,3 @@
+rootProject.name = 'container-booking-system'
+
+include 'booking-service'

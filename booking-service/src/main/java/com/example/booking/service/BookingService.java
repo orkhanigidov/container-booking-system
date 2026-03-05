@@ -2,6 +2,8 @@ package com.example.booking.service;
 
 import com.example.booking.dto.BookingRequest;
 import com.example.booking.dto.BookingResponse;
+import com.example.booking.event.BookingCreatedEvent;
+import com.example.booking.kafka.BookingEventProducer;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.repository.BookingRepository;
@@ -15,6 +17,7 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository repository;
+    private final BookingEventProducer producer;
 
     public BookingResponse create(BookingRequest request) {
         Booking booking = new Booking();
@@ -23,6 +26,14 @@ public class BookingService {
         booking.setContainerCount(request.getContainerCount());
         booking.setStatus(BookingStatus.PENDING);
         booking = repository.save(booking);
+
+        producer.sendBookingCreated(new BookingCreatedEvent(
+                booking.getId(),
+                booking.getCustomerId(),
+                booking.getShipId(),
+                booking.getContainerCount()
+        ));
+
         return toResponse(booking);
     }
 

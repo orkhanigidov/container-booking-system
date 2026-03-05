@@ -1,3 +1,4 @@
 rootProject.name = 'container-booking-system'
 
 include 'booking-service'
+include 'inventory-service'

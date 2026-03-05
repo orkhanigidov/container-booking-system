@@ -1,6 +1,7 @@
 package com.example.inventory.kafka;
 
 import com.example.inventory.event.BookingCreatedEvent;
+import com.example.inventory.event.InventoryReleaseEvent;
 import com.example.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +15,15 @@ public class InventoryEventConsumer {
 
     private final InventoryService inventoryService;
 
-    @KafkaListener(topics = "booking.created", groupId = "inventory-service",
-            containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "booking.created", groupId = "inventory-service")
     public void onBookingCreated(BookingCreatedEvent event) {
         log.info("Received booking.created for bookingId={}", event.getBookingId());
         inventoryService.reserve(event);
+    }
+
+    @KafkaListener(topics = "inventory.release", groupId = "inventory-service")
+    public void onInventoryRelease(InventoryReleaseEvent event) {
+        log.info("Received inventory.release for bookingId={}", event.getBookingId());
+        inventoryService.release(event.getBookingId(), event.getShipId(), event.getContainerCount());
     }
 }

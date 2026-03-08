@@ -3,7 +3,12 @@ WORKDIR /app
 COPY gradlew .
 COPY gradle gradle
 COPY settings.gradle .
+
+COPY booking-service/build.gradle booking-service/
+COPY inventory-service/build.gradle inventory-service/
+COPY payment-service/build.gradle payment-service/
 COPY notification-service/build.gradle notification-service/
+
 COPY notification-service/src notification-service/src
 RUN ./gradlew :notification-service:bootJar --no-daemon
 

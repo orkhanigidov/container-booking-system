@@ -8,8 +8,8 @@ import com.example.payment.model.Payment;
 import com.example.payment.model.PaymentStatus;
 import com.example.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;

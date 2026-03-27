@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-db
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: booking-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-db
+spec:
+  selector:
+    matchLabels:
+      app: booking-db
+  template:
+    metadata:
+      labels:
+        app: booking-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:alpine
+          env:
+            - name: POSTGRES_DB
+              value: bookingdb
+            - name: POSTGRES_USER
+              value: booking
+            - name: POSTGRES_PASSWORD
+              value: booking
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-db
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: inventory-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-db
+spec:
+  selector:
+    matchLabels:
+      app: inventory-db
+  template:
+    metadata:
+      labels:
+        app: inventory-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:alpine
+          env:
+            - name: POSTGRES_DB
+              value: inventorydb
+            - name: POSTGRES_USER
+              value: inventory
+            - name: POSTGRES_PASSWORD
+              value: inventory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-db
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: payment-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-db
+spec:
+  selector:
+    matchLabels:
+      app: payment-db
+  template:
+    metadata:
+      labels:
+        app: payment-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:alpine
+          env:
+            - name: POSTGRES_DB
+              value: paymentdb
+            - name: POSTGRES_USER
+              value: payment
+            - name: POSTGRES_PASSWORD
+              value: payment

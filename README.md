@@ -1,11 +1,13 @@
 # Container Shipment Booking System
 
-A learning project to explore microservices, Kafka event streaming, and the Saga pattern.
+A learning project to explore microservices, Kafka event streaming, and the Saga pattern, and modern deployment
+strategies (Docker Compose, Kubernetes, and Helm).
 The domain is inspired by container shipping — booking a cargo container on a ship.
 
 ## What it does
 
 A customer submits a container booking. The system:
+
 1. Creates the booking (status: PENDING)
 2. Checks if the ship has enough available slots
 3. Processes a mock payment
@@ -53,15 +55,16 @@ POST /bookings
 - PostgreSQL (each service has its own database)
 - Flyway (database migrations)
 - Testcontainers (integration tests)
-- Docker Compose
+- Docker Compose, Kubernetes, Helm
 
 ## Getting Started
 
-### Prerequisites
+You can run this project using either Docker Compose (easiest for quick local testing) or Kubernetes / Helm (best for
+production environments).
 
-- Docker & Docker Compose
+### Option 1: Running with Docker Compose
 
-### Run
+**1. Start the environment:**
 
 ```bash
 docker compose up --build
@@ -69,9 +72,57 @@ docker compose up --build
 
 Wait about 30-40 seconds for all services to start.
 
+**2. Stop the environment:**
+
+```bash
+docker compose down -v
+```
+
+### Option 2: Running with Kubernetes & Helm
+
+**Prerequisites:** A local Kubernetes cluster (like Docker Desktop K8s or Minikube) and Helm installed.
+
+**1. Build Docker images locally:**
+
+```bash
+docker build -t booking-service:latest -f booking-service/Dockerfile .
+docker build -t inventory-service:latest -f inventory-service/Dockerfile .
+docker build -t payment-service:latest -f payment-service/Dockerfile .
+docker build -t notification-service:latest -f notification-service/Dockerfile .
+```
+
+**2. Deploy using Helm:**
+
+```bash
+helm install my-booking-system ./helm/booking-chart
+```
+
+**3. Verify the deployment:**
+
+```bash
+kubectl get pods -w
+```
+
+Wait until all pods show 1/1 Running.
+
+**4. Port-forward the Booking Service API:**
+
+```bash
+kubectl port-forward svc/booking-service 8081:8081
+```
+
+**5. Uninstall / Cleanup:**
+
+```bash
+helm uninstall my-booking-system
+```
+
+Note: Raw Kubernetes manifests are also available in the k8s/ directory for learning purposes.
+
 ### Try it out
 
 **Create a booking:**
+
 ```bash
 curl -X POST http://localhost:8081/bookings \
   -H "Content-Type: application/json" \
@@ -83,31 +134,53 @@ curl -X POST http://localhost:8081/bookings \
 ```
 
 Response:
+
 ```json
-{"id": 1, "customerId": "C001", "shipId": "SH001", "containerCount": 10, "status": "PENDING", ...}
+{
+  "id": 1,
+  "customerId": "C001",
+  "shipId": "SH001",
+  "containerCount": 10,
+  "status": "PENDING",
+  ...
+}
 ```
 
 **Check status (wait 2-3 seconds for events to propagate):**
+
 ```bash
 curl http://localhost:8081/bookings/1
 ```
 
 Response will be either:
+
 ```json
-{"id": 1, ..., "status": "CONFIRMED"}
+{
+  "id": 1,
+  ...,
+  "status": "CONFIRMED"
+}
 ```
+
 or (20% of the time, due to simulated payment failure):
+
 ```json
-{"id": 1, ..., "status": "CANCELLED"}
+{
+  "id": 1,
+  ...,
+  "status": "CANCELLED"
+}
 ```
 
 **Watch the saga in action:**
+
 ```bash
 # Open in a separate terminal
 docker compose logs -f booking-service inventory-service payment-service notification-service
 ```
 
 **Check available ships:**
+
 ```bash
 # After a few confirmed bookings, available slots should decrease
 docker compose exec inventory-db psql -U inventory -d inventorydb \
@@ -116,6 +189,7 @@ docker compose exec inventory-db psql -U inventory -d inventorydb \
 
 **Simulate payment failure more often** (set failure rate to 80%):
 Edit `payment-service/src/main/resources/application.yml`:
+
 ```yaml
 app:
   payment:
@@ -141,7 +215,9 @@ container-booking-system/
 ├── inventory-service/     Ship slot management
 ├── payment-service/       Mock payment processing
 ├── notification-service/  Email notifications (logged)
-├── docker-compose.yml
+├── k8s/                   Raw Kubernetes manifests (learning/testing)
+├── helm/booking-chart/    Helm chart for automated K8s deployment
+├── docker-compose.yml     Docker Compose configuration
 └── README.md
 ```
 

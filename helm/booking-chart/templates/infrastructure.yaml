@@ -1,0 +1,178 @@
+# --- ZOOKEEPER ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+spec:
+  ports:
+    - port: {{ .Values.infra.zookeeper.port }}
+  selector:
+    app: zookeeper
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+spec:
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: {{ .Values.infra.zookeeper.image }}
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: {{ .Values.infra.zookeeper.port }}
+
+# --- KAFKA ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  ports:
+    - port: {{ .Values.infra.kafka.port }}
+  selector:
+    app: kafka
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: {{ .Values.infra.kafka.image }}
+          env:
+            - name: KAFKA_BROKER_ID
+              value: "1"
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: "zookeeper:{{ .Values.infra.zookeeper.port }}"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://kafka:{{ .Values.infra.kafka.port }}"
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+
+# --- BOOKING DATABASE ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-db
+spec:
+  ports:
+    - port: {{ .Values.infra.database.port }}
+  selector:
+    app: booking-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-db
+spec:
+  selector:
+    matchLabels:
+      app: booking-db
+  template:
+    metadata:
+      labels:
+        app: booking-db
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.infra.database.image }}
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.infra.database.booking.dbName }}
+            - name: POSTGRES_USER
+              value: {{ .Values.infra.database.booking.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.infra.database.booking.pass }}
+
+# --- INVENTORY DATABASE ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-db
+spec:
+  ports:
+    - port: {{ .Values.infra.database.port }}
+  selector:
+    app: inventory-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-db
+spec:
+  selector:
+    matchLabels:
+      app: inventory-db
+  template:
+    metadata:
+      labels:
+        app: inventory-db
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.infra.database.image }}
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.infra.database.inventory.dbName }}
+            - name: POSTGRES_USER
+              value: {{ .Values.infra.database.inventory.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.infra.database.inventory.pass }}
+
+# --- PAYMENT DATABASE ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-db
+spec:
+  ports:
+    - port: {{ .Values.infra.database.port }}
+  selector:
+    app: payment-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-db
+spec:
+  selector:
+    matchLabels:
+      app: payment-db
+  template:
+    metadata:
+      labels:
+        app: payment-db
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.infra.database.image }}
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.infra.database.payment.dbName }}
+            - name: POSTGRES_USER
+              value: {{ .Values.infra.database.payment.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.infra.database.payment.pass }}

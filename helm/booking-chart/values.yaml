@@ -1,0 +1,51 @@
+infra:
+  zookeeper:
+    image: "confluentinc/cp-zookeeper:7.6.0"
+    port: 2181
+
+  kafka:
+    image: "confluentinc/cp-kafka:7.6.0"
+    port: 9092
+    listenerIP: "0.0.0.0"
+
+  database:
+    image: "postgres:alpine"
+    port: 5432
+    booking:
+      dbName: "bookingdb"
+      user: "booking"
+      pass: "booking"
+    inventory:
+      dbName: "inventorydb"
+      user: "inventory"
+      pass: "inventory"
+    payment:
+      dbName: "paymentdb"
+      user: "payment"
+      pass: "payment"
+
+apps:
+  kafkaServerUrl: "kafka:9092"
+
+  booking:
+    image: "booking-service:latest"
+    port: 8081
+    type: NodePort
+    dbHost: "booking-db"
+
+  inventory:
+    image: "inventory-service:latest"
+    port: 8082
+    type: ClusterIP
+    dbHost: "inventory-db"
+
+  payment:
+    image: "payment-service:latest"
+    port: 8083
+    type: ClusterIP
+    dbHost: "payment-db"
+
+  notification:
+    image: "notification-service:latest"
+    port: 8084
+    type: ClusterIP

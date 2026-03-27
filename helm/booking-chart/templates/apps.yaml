@@ -1,0 +1,144 @@
+# --- BOOKING SERVICE ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+spec:
+  type: {{ .Values.apps.booking.type }}
+  ports:
+    - port: {{ .Values.apps.booking.port }}
+      targetPort: {{ .Values.apps.booking.port }}
+  selector:
+    app: booking-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+spec:
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+        - name: booking-service
+          image: {{ .Values.apps.booking.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DB_HOST
+              value: {{ .Values.apps.booking.dbHost }}
+            - name: KAFKA_SERVERS
+              value: {{ .Values.apps.kafkaServerUrl }}
+
+# --- INVENTORY SERVICE ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-service
+spec:
+  type: {{ .Values.apps.inventory.type }}
+  ports:
+    - port: {{ .Values.apps.inventory.port }}
+      targetPort: {{ .Values.apps.inventory.port }}
+  selector:
+    app: inventory-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-service
+spec:
+  selector:
+    matchLabels:
+      app: inventory-service
+  template:
+    metadata:
+      labels:
+        app: inventory-service
+    spec:
+      containers:
+        - name: inventory-service
+          image: {{ .Values.apps.inventory.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DB_HOST
+              value: {{ .Values.apps.inventory.dbHost }}
+            - name: KAFKA_SERVERS
+              value: {{ .Values.apps.kafkaServerUrl }}
+
+# --- PAYMENT SERVICE ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  type: {{ .Values.apps.payment.type }}
+  ports:
+    - port: {{ .Values.apps.payment.port }}
+      targetPort: {{ .Values.apps.payment.port }}
+  selector:
+    app: payment-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+        - name: payment-service
+          image: {{ .Values.apps.payment.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DB_HOST
+              value: {{ .Values.apps.payment.dbHost }}
+            - name: KAFKA_SERVERS
+              value: {{ .Values.apps.kafkaServerUrl }}
+
+# --- NOTIFICATION SERVICE ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  type: {{ .Values.apps.notification.type }}
+  ports:
+    - port: {{ .Values.apps.notification.port }}
+      targetPort: {{ .Values.apps.notification.port }}
+  selector:
+    app: notification-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+spec:
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: {{ .Values.apps.notification.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KAFKA_SERVERS
+              value: {{ .Values.apps.kafkaServerUrl }}

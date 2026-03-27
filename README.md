@@ -198,6 +198,14 @@ app:
 
 Then rebuild: `docker compose up --build payment-service`
 
+## API Documentation (Swagger UI)
+
+Interactive API docs are available at:
+
+```
+http://localhost:8081/swagger-ui.html
+```
+
 ## Running Tests
 
 ```bash

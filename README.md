@@ -1,5 +1,7 @@
 # Container Shipment Booking System
 
+[![CI/CD Pipeline](https://github.com/orkhanigidov/container-booking-system/actions/workflows/ci.yml/badge.svg)](https://github.com/orkhanigidov/container-booking-system/actions/workflows/ci.yml)
+
 A learning project to explore microservices, Kafka event streaming, and the Saga pattern, and modern deployment
 strategies (Docker Compose, Kubernetes, and Helm).
 The domain is inspired by container shipping — booking a cargo container on a ship.
@@ -214,6 +216,18 @@ cd booking-service
 ```
 
 Testcontainers will automatically start PostgreSQL and Kafka in Docker.
+
+## CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration. The pipeline automatically triggers on every push and pull
+request to the `master` branch.
+
+It performs the following steps:
+
+1. Sets up the Java 17 environment.
+2. Caches Gradle dependencies to speed up builds.
+3. Runs all unit and integration tests across all microservices (spinning up PostgreSQL and Kafka via Testcontainers).
+4. Builds the Docker images for all four services to ensure the `Dockerfile` configurations remain valid.
 
 ## Project Structure
 

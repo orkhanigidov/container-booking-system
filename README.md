@@ -246,5 +246,4 @@ container-booking-system/
 ## Known Limitations
 
 - Payment service randomly fails 20% of the time (intentional for testing Saga)
-- Notification service only logs — no real email sending
 - No API authentication

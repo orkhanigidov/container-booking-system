@@ -13,3 +13,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "com.example.*"
+  mail:
+    host: ${SMTP_HOST:sandbox.smtp.mailtrap.io}
+    port: ${SMTP_PORT:2525}
+    username: ${SMTP_USERNAME:user}
+    password: ${SMTP_PASSWORD:pass}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true

@@ -210,8 +210,15 @@ http://localhost:8081/swagger-ui.html
 
 ## Running Tests
 
+To run the unit and integration tests across the services:
+
 ```bash
+# Run tests for booking-service (includes Testcontainers for DB and Kafka)
 cd booking-service
+./gradlew test
+
+# Run tests for notification-service (includes Mockito tests for email sending)
+cd notification-service
 ./gradlew test
 ```
 

@@ -246,6 +246,5 @@ container-booking-system/
 ## Known Limitations
 
 - Payment service randomly fails 20% of the time (intentional for testing Saga)
-- No retry mechanism if a Kafka consumer crashes mid-processing
 - Notification service only logs — no real email sending
 - No API authentication

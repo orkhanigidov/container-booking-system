@@ -236,6 +236,16 @@ It performs the following steps:
 3. Runs all unit and integration tests across all microservices (spinning up PostgreSQL and Kafka via Testcontainers).
 4. Builds the Docker images for all four services to ensure the `Dockerfile` configurations remain valid.
 
+## Build & Deployment Optimizations
+
+The project utilizes advanced Docker and Spring Boot features to ensure fast and efficient delivery:
+
+- **Multi-Stage Builds:** Separates the build environment from the runtime environment to reduce final image size.
+- **Layered JARs:** Leverages Spring Boot's `layertools` to split the application into functional layers (dependencies,
+  loader, application). This significantly improves Docker layer caching and reduces CI/CD build times.
+- **Dependency Caching:** Build scripts are structured to cache Gradle dependencies independently of source code
+  changes, preventing redundant downloads.
+
 ## Project Structure
 
 ```

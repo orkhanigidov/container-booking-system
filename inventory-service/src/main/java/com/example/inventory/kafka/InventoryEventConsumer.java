@@ -17,13 +17,13 @@ public class InventoryEventConsumer {
 
     @KafkaListener(topics = "booking.created", groupId = "inventory-service")
     public void onBookingCreated(BookingCreatedEvent event) {
-        log.info("Received booking.created for bookingId={}", event.getBookingId());
+        log.info("Received booking.created for bookingId={}", event.bookingId());
         inventoryService.reserve(event);
     }
 
     @KafkaListener(topics = "inventory.release", groupId = "inventory-service")
     public void onInventoryRelease(InventoryReleaseEvent event) {
-        log.info("Received inventory.release for bookingId={}", event.getBookingId());
-        inventoryService.release(event.getBookingId(), event.getShipId(), event.getContainerCount());
+        log.info("Received inventory.release for bookingId={}", event.bookingId());
+        inventoryService.release(event.bookingId(), event.shipId(), event.containerCount());
     }
 }

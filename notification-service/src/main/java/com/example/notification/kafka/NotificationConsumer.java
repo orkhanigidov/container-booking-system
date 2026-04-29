@@ -18,21 +18,21 @@ public class NotificationConsumer {
 
     @KafkaListener(topics = "payment.confirmed", groupId = "notification-service")
     public void onPaymentConfirmed(PaymentConfirmedEvent event) {
-        log.info("Preparing to send confirmation email for bookingId={}", event.getBookingId());
+        log.info("Preparing to send confirmation email for bookingId={}", event.bookingId());
         sendEmail(
                 "customer@example.com",
-                "Booking Confirmed: #" + event.getBookingId(),
-                "Thank you for your booking! Your container booking #" + event.getBookingId() + " has been successfully confirmed."
+                "Booking Confirmed: #" + event.bookingId(),
+                "Thank you for your booking! Your container booking #" + event.bookingId() + " has been successfully confirmed."
         );
     }
 
     @KafkaListener(topics = "payment.failed", groupId = "notification-service")
     public void onPaymentFailed(PaymentFailedEvent event) {
-        log.warn("Preparing to send cancellation email for bookingId={}. Reason: {}", event.getBookingId(), event.getReason());
+        log.warn("Preparing to send cancellation email for bookingId={}. Reason: {}", event.bookingId(), event.reason());
         sendEmail(
                 "customer@example.com",
-                "Booking Cancelled: #" + event.getBookingId(),
-                "We are sorry, but your booking #" + event.getBookingId() + " was cancelled.\nReason: " + event.getReason()
+                "Booking Cancelled: #" + event.bookingId(),
+                "We are sorry, but your booking #" + event.bookingId() + " was cancelled.\nReason: " + event.reason()
         );
     }
 

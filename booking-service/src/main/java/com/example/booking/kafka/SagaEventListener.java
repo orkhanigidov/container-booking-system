@@ -22,24 +22,24 @@ public class SagaEventListener {
 
     @KafkaListener(topics = "inventory.failed", groupId = "booking-service")
     public void onInventoryFailed(InventoryFailedEvent event) {
-        log.warn("Inventory failed for bookingId={}. Cancelling.", event.getBookingId());
-        bookingService.updateStatus(event.getBookingId(), BookingStatus.CANCELLED);
+        log.warn("Inventory failed for bookingId={}. Cancelling.", event.bookingId());
+        bookingService.updateStatus(event.bookingId(), BookingStatus.CANCELLED);
     }
 
     @KafkaListener(topics = "payment.confirmed", groupId = "booking-service")
     public void onPaymentConfirmed(PaymentConfirmedEvent event) {
-        log.info("Payment confirmed for bookingId={}. Booking is CONFIRMED.", event.getBookingId());
-        bookingService.updateStatus(event.getBookingId(), BookingStatus.CONFIRMED);
+        log.info("Payment confirmed for bookingId={}. Booking is CONFIRMED.", event.bookingId());
+        bookingService.updateStatus(event.bookingId(), BookingStatus.CONFIRMED);
     }
 
     @KafkaListener(topics = "payment.failed", groupId = "booking-service")
     public void onPaymentFailed(PaymentFailedEvent event) {
-        log.warn("Payment failed for bookingId={}. Starting compensation.", event.getBookingId());
-        bookingService.updateStatus(event.getBookingId(), BookingStatus.CANCELLED);
+        log.warn("Payment failed for bookingId={}. Starting compensation.", event.bookingId());
+        bookingService.updateStatus(event.bookingId(), BookingStatus.CANCELLED);
 
         kafkaTemplate.send("inventory.release",
-                String.valueOf(event.getBookingId()),
-                new InventoryReleaseEvent(event.getBookingId(), event.getShipId(), event.getContainerCount())
+                String.valueOf(event.bookingId()),
+                new InventoryReleaseEvent(event.bookingId(), event.shipId(), event.containerCount())
         );
     }
 }

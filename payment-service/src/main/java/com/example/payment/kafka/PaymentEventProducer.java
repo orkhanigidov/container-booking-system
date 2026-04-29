@@ -15,10 +15,10 @@ public class PaymentEventProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void sendConfirmed(PaymentConfirmedEvent event) {
-        kafkaTemplate.send("payment.confirmed", String.valueOf(event.getBookingId()), event);
+        kafkaTemplate.send("payment.confirmed", String.valueOf(event.bookingId()), event);
     }
 
     public void sendFailed(PaymentFailedEvent event) {
-        kafkaTemplate.send("payment.failed", String.valueOf(event.getBookingId()), event);
+        kafkaTemplate.send("payment.failed", String.valueOf(event.bookingId()), event);
     }
 }

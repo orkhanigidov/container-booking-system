@@ -30,24 +30,24 @@ public class PaymentService {
         boolean shouldFail = random.nextDouble() < failureRate;
 
         Payment payment = new Payment();
-        payment.setBookingId(event.getBookingId());
+        payment.setBookingId(event.bookingId());
 
         if (shouldFail) {
             payment.setStatus(PaymentStatus.FAILED);
             payment.setFailureReason("Insufficient funds");
             paymentRepository.save(payment);
-            log.warn("Payment FAILED for bookingId={}", event.getBookingId());
+            log.warn("Payment FAILED for bookingId={}", event.bookingId());
             producer.sendFailed(new PaymentFailedEvent(
-                    event.getBookingId(),
-                    event.getShipId(),
-                    event.getContainerCount(),
+                    event.bookingId(),
+                    event.shipId(),
+                    event.containerCount(),
                     "Insufficient funds"
             ));
         } else {
             payment.setStatus(PaymentStatus.CONFIRMED);
             paymentRepository.save(payment);
-            log.info("Payment CONFIRMED for bookingId={}", event.getBookingId());
-            producer.sendConfirmed(new PaymentConfirmedEvent(event.getBookingId()));
+            log.info("Payment CONFIRMED for bookingId={}", event.bookingId());
+            producer.sendConfirmed(new PaymentConfirmedEvent(event.bookingId()));
         }
     }
 }

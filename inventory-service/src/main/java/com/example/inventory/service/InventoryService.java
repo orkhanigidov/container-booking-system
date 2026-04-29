@@ -21,29 +21,26 @@ public class InventoryService {
 
     @Transactional
     public void reserve(BookingCreatedEvent event) {
-        Ship ship = shipRepository.findById(event.getShipId()).orElse(null);
+        Ship ship = shipRepository.findById(event.shipId()).orElse(null);
 
         if (ship == null) {
-            log.warn("Ship not found: {}", event.getShipId());
-            producer.sendFailed(new InventoryFailedEvent(event.getBookingId(), "Ship not found"));
+            log.warn("Ship not found: {}", event.shipId());
+            producer.sendFailed(new InventoryFailedEvent(event.bookingId(), "Ship not found"));
             return;
         }
 
-        if (ship.getAvailableSlots() < event.getContainerCount()) {
+        if (ship.getAvailableSlots() < event.containerCount()) {
             log.warn("Not enough slots on ship {}. Available: {}, Requested: {}",
-                    ship.getId(), ship.getAvailableSlots(), event.getContainerCount());
-            producer.sendFailed(new InventoryFailedEvent(event.getBookingId(), "Not enough slots"));
+                    ship.getId(), ship.getAvailableSlots(), event.containerCount());
+            producer.sendFailed(new InventoryFailedEvent(event.bookingId(), "Not enough slots"));
             return;
         }
 
-        ship.setAvailableSlots(ship.getAvailableSlots() - event.getContainerCount());
+        ship.setAvailableSlots(ship.getAvailableSlots() - event.containerCount());
         shipRepository.save(ship);
-        log.info("Reserved {} slots on ship {} for booking {}",
-                event.getContainerCount(), ship.getId(), event.getBookingId());
+        log.info("Reserved {} slots on ship {} for booking {}", event.containerCount(), ship.getId(), event.bookingId());
 
-        producer.sendReserved(new InventoryReservedEvent(
-                event.getBookingId(), ship.getId(), event.getContainerCount()
-        ));
+        producer.sendReserved(new InventoryReservedEvent(event.bookingId(), ship.getId(), event.containerCount()));
     }
 
     @Transactional

@@ -21,9 +21,9 @@ public class BookingService {
 
     public BookingResponse create(BookingRequest request) {
         Booking booking = new Booking();
-        booking.setCustomerId(request.getCustomerId());
-        booking.setShipId(request.getShipId());
-        booking.setContainerCount(request.getContainerCount());
+        booking.setCustomerId(request.customerId());
+        booking.setShipId(request.shipId());
+        booking.setContainerCount(request.containerCount());
         booking.setStatus(BookingStatus.PENDING);
         booking = repository.save(booking);
 

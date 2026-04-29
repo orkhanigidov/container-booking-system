@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -53,10 +53,7 @@ public class BookingControllerTest {
 
     @Test
     void createBooking_shouldReturnCreatedWithPendingStatus() {
-        BookingRequest request = new BookingRequest();
-        request.setCustomerId("C001");
-        request.setShipId("SH001");
-        request.setContainerCount(5);
+        BookingRequest request = new BookingRequest("C001", "SH001", 5);
 
         ResponseEntity<Map> response = restTemplate.postForEntity("/bookings", request, Map.class);
 

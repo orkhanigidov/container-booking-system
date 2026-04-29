@@ -25,8 +25,7 @@ public class NotificationConsumerTest {
 
     @Test
     void onPaymentConfirmed_shouldSendConfirmationEmail() {
-        PaymentConfirmedEvent event = new PaymentConfirmedEvent();
-        event.setBookingId(101L);
+        PaymentConfirmedEvent event = new PaymentConfirmedEvent(101L);
 
         notificationConsumer.onPaymentConfirmed(event);
 
@@ -42,9 +41,7 @@ public class NotificationConsumerTest {
 
     @Test
     void onPaymentFailed_shouldSendCancellationEmail() {
-        PaymentFailedEvent event = new PaymentFailedEvent();
-        event.setBookingId(202L);
-        event.setReason("Insufficient funds");
+        PaymentFailedEvent event = new PaymentFailedEvent(202L, "SH001", 5, "Insufficient funds");
 
         notificationConsumer.onPaymentFailed(event);
 

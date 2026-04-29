@@ -16,7 +16,7 @@ public class PaymentEventConsumer {
 
     @KafkaListener(topics = "inventory.reserved", groupId = "payment-service")
     public void onInventoryReserved(InventoryReservedEvent event) {
-        log.info("Received inventory.reserved for bookingId={}", event.getBookingId());
+        log.info("Received inventory.reserved for bookingId={}", event.bookingId());
         paymentService.process(event);
     }
 }

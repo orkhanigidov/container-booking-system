@@ -19,21 +19,23 @@ public class NotificationConsumer {
     @KafkaListener(topics = "payment.confirmed", groupId = "notification-service")
     public void onPaymentConfirmed(PaymentConfirmedEvent event) {
         log.info("Preparing to send confirmation email for bookingId={}", event.bookingId());
-        sendEmail(
-                "customer@example.com",
-                "Booking Confirmed: #" + event.bookingId(),
-                "Thank you for your booking! Your container booking #" + event.bookingId() + " has been successfully confirmed."
-        );
+
+        var messageBody = """
+                Thank you for your booking!
+                Your container booking #%d has been successfully confirmed.
+                """.formatted(event.bookingId());
+        sendEmail("customer@example.com", "Booking Confirmed: #" + event.bookingId(), messageBody);
     }
 
     @KafkaListener(topics = "payment.failed", groupId = "notification-service")
     public void onPaymentFailed(PaymentFailedEvent event) {
         log.warn("Preparing to send cancellation email for bookingId={}. Reason: {}", event.bookingId(), event.reason());
-        sendEmail(
-                "customer@example.com",
-                "Booking Cancelled: #" + event.bookingId(),
-                "We are sorry, but your booking #" + event.bookingId() + " was cancelled.\nReason: " + event.reason()
-        );
+
+        var messageBody = """
+                We are sorry, but your booking #d was cancelled.
+                Reason: %s
+                """.formatted(event.bookingId(), event.reason());
+        sendEmail("customer@example.com", "Booking Cancelled: #" + event.bookingId(), messageBody);
     }
 
     private void sendEmail(String to, String subject, String text) {

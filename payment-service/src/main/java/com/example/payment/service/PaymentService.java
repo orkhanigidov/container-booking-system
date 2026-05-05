@@ -29,7 +29,7 @@ public class PaymentService {
     public void process(InventoryReservedEvent event) {
         boolean shouldFail = random.nextDouble() < failureRate;
 
-        Payment payment = new Payment();
+        var payment = new Payment();
         payment.setBookingId(event.bookingId());
 
         if (shouldFail) {

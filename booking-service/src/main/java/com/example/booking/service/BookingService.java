@@ -20,21 +20,21 @@ public class BookingService {
     private final BookingEventProducer producer;
 
     public BookingResponse create(BookingRequest request) {
-        Booking booking = new Booking();
+        var booking = new Booking();
         booking.setCustomerId(request.customerId());
         booking.setShipId(request.shipId());
         booking.setContainerCount(request.containerCount());
         booking.setStatus(BookingStatus.PENDING);
-        booking = repository.save(booking);
+
+        var savedBooking = repository.save(booking);
 
         producer.sendBookingCreated(new BookingCreatedEvent(
-                booking.getId(),
-                booking.getCustomerId(),
-                booking.getShipId(),
-                booking.getContainerCount()
+                savedBooking.getId(),
+                savedBooking.getCustomerId(),
+                savedBooking.getShipId(),
+                savedBooking.getContainerCount()
         ));
-
-        return toResponse(booking);
+        return toResponse(savedBooking);
     }
 
     public BookingResponse getById(Long id) {

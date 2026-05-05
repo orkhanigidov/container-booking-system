@@ -5,6 +5,7 @@ import com.example.notification.event.PaymentFailedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -40,14 +41,14 @@ public class NotificationConsumer {
 
     private void sendEmail(String to, String subject, String text) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
+            var message = new SimpleMailMessage();
             message.setFrom("noreply@booking-system.com");
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);
             mailSender.send(message);
             log.info("=== EMAIL SENT SUCCESSFULLY to {} ===", to);
-        } catch (Exception e) {
+        } catch (MailException e) {
             log.error("=== FAILED TO SEND EMAIL to {}: {} ===", to, e.getMessage());
         }
     }

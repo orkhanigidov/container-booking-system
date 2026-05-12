@@ -3,6 +3,8 @@ package com.example.booking.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.converter.RecordMessageConverter;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.util.backoff.FixedBackOff;
 
 @Configuration
@@ -12,5 +14,10 @@ public class KafkaConfig {
     public DefaultErrorHandler errorHandler() {
         FixedBackOff fixedBackOff = new FixedBackOff(2000L, 3); // Retry every 2 second, up to 3 times
         return new DefaultErrorHandler(fixedBackOff);
+    }
+
+    @Bean
+    public RecordMessageConverter converter() {
+        return new StringJsonMessageConverter();
     }
 }

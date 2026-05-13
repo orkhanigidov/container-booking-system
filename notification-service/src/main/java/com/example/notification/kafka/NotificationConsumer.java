@@ -33,7 +33,7 @@ public class NotificationConsumer {
         log.warn("Preparing to send cancellation email for bookingId={}. Reason: {}", event.bookingId(), event.reason());
 
         var messageBody = """
-                We are sorry, but your booking #d was cancelled.
+                We are sorry, but your booking #%d was cancelled.
                 Reason: %s
                 """.formatted(event.bookingId(), event.reason());
         sendEmail("customer@example.com", "Booking Cancelled: #" + event.bookingId(), messageBody);

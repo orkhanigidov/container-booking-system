@@ -14,7 +14,7 @@ public class PaymentEventConsumer {
 
     private final PaymentService paymentService;
 
-    @KafkaListener(topics = "inventory.reserved", groupId = "payment-service")
+    @KafkaListener(topics = KafkaTopics.INVENTORY_RESERVED, groupId = "payment-service")
     public void onInventoryReserved(InventoryReservedEvent event) {
         log.info("Received inventory.reserved for bookingId={}", event.bookingId());
         paymentService.process(event);

@@ -20,24 +20,24 @@ public class SagaEventListener {
     private final BookingService bookingService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @KafkaListener(topics = "inventory.failed", groupId = "booking-service")
+    @KafkaListener(topics = KafkaTopics.INVENTORY_FAILED, groupId = "booking-service")
     public void onInventoryFailed(InventoryFailedEvent event) {
         log.warn("Inventory failed for bookingId={}. Cancelling.", event.bookingId());
         bookingService.updateStatus(event.bookingId(), BookingStatus.CANCELLED);
     }
 
-    @KafkaListener(topics = "payment.confirmed", groupId = "booking-service")
+    @KafkaListener(topics = KafkaTopics.PAYMENT_CONFIRMED, groupId = "booking-service")
     public void onPaymentConfirmed(PaymentConfirmedEvent event) {
         log.info("Payment confirmed for bookingId={}. Booking is CONFIRMED.", event.bookingId());
         bookingService.updateStatus(event.bookingId(), BookingStatus.CONFIRMED);
     }
 
-    @KafkaListener(topics = "payment.failed", groupId = "booking-service")
+    @KafkaListener(topics = KafkaTopics.PAYMENT_FAILED, groupId = "booking-service")
     public void onPaymentFailed(PaymentFailedEvent event) {
         log.warn("Payment failed for bookingId={}. Starting compensation.", event.bookingId());
         bookingService.updateStatus(event.bookingId(), BookingStatus.CANCELLED);
 
-        kafkaTemplate.send("inventory.release",
+        kafkaTemplate.send(KafkaTopics.INVENTORY_RELEASE,
                 String.valueOf(event.bookingId()),
                 new InventoryReleaseEvent(event.bookingId(), event.shipId(), event.containerCount())
         );

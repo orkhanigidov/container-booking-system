@@ -16,11 +16,11 @@ public class InventoryEventProducer {
 
     public void sendReserved(InventoryReservedEvent event) {
         log.info("Sending inventory.reserved for bookingId={}", event.bookingId());
-        kafkaTemplate.send("inventory.reserved", String.valueOf(event.bookingId()), event);
+        kafkaTemplate.send(KafkaTopics.INVENTORY_RESERVED, String.valueOf(event.bookingId()), event);
     }
 
     public void sendFailed(InventoryFailedEvent event) {
         log.info("Sending inventory.failed for bookingId={}", event.bookingId());
-        kafkaTemplate.send("inventory.failed", String.valueOf(event.bookingId()), event);
+        kafkaTemplate.send(KafkaTopics.INVENTORY_FAILED, String.valueOf(event.bookingId()), event);
     }
 }

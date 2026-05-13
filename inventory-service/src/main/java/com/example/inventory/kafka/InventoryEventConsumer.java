@@ -15,13 +15,13 @@ public class InventoryEventConsumer {
 
     private final InventoryService inventoryService;
 
-    @KafkaListener(topics = "booking.created", groupId = "inventory-service")
+    @KafkaListener(topics = KafkaTopics.BOOKING_CREATED, groupId = "inventory-service")
     public void onBookingCreated(BookingCreatedEvent event) {
         log.info("Received booking.created for bookingId={}", event.bookingId());
         inventoryService.reserve(event);
     }
 
-    @KafkaListener(topics = "inventory.release", groupId = "inventory-service")
+    @KafkaListener(topics = KafkaTopics.INVENTORY_RELEASE, groupId = "inventory-service")
     public void onInventoryRelease(InventoryReleaseEvent event) {
         log.info("Received inventory.release for bookingId={}", event.bookingId());
         inventoryService.release(event.bookingId(), event.shipId(), event.containerCount());

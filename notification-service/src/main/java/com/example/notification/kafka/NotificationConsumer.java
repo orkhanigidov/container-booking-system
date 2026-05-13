@@ -17,7 +17,7 @@ public class NotificationConsumer {
 
     private final JavaMailSender mailSender;
 
-    @KafkaListener(topics = "payment.confirmed", groupId = "notification-service")
+    @KafkaListener(topics = KafkaTopics.PAYMENT_CONFIRMED, groupId = "notification-service")
     public void onPaymentConfirmed(PaymentConfirmedEvent event) {
         log.info("Preparing to send confirmation email for bookingId={}", event.bookingId());
 
@@ -28,7 +28,7 @@ public class NotificationConsumer {
         sendEmail("customer@example.com", "Booking Confirmed: #" + event.bookingId(), messageBody);
     }
 
-    @KafkaListener(topics = "payment.failed", groupId = "notification-service")
+    @KafkaListener(topics = KafkaTopics.PAYMENT_FAILED, groupId = "notification-service")
     public void onPaymentFailed(PaymentFailedEvent event) {
         log.warn("Preparing to send cancellation email for bookingId={}. Reason: {}", event.bookingId(), event.reason());
 

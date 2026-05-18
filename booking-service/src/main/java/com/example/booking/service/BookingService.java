@@ -31,6 +31,7 @@ public class BookingService {
         producer.sendBookingCreated(new BookingCreatedEvent(
                 savedBooking.getId(),
                 savedBooking.getCustomerId(),
+                savedBooking.getCustomerEmail(),
                 savedBooking.getShipId(),
                 savedBooking.getContainerCount()
         ));

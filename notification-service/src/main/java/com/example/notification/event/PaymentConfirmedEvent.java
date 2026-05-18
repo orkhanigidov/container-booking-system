@@ -1,6 +1,7 @@
 package com.example.notification.event;
 
 public record PaymentConfirmedEvent(
-        Long bookingId
+        Long bookingId,
+        String customerEmail
 ) {
 }

@@ -25,7 +25,7 @@ public class NotificationConsumer {
                 Thank you for your booking!
                 Your container booking #%d has been successfully confirmed.
                 """.formatted(event.bookingId());
-        sendEmail("customer@example.com", "Booking Confirmed: #" + event.bookingId(), messageBody);
+        sendEmail(event.customerEmail(), "Booking Confirmed: #" + event.bookingId(), messageBody);
     }
 
     @KafkaListener(topics = KafkaTopics.PAYMENT_FAILED, groupId = "notification-service")
@@ -36,7 +36,7 @@ public class NotificationConsumer {
                 We are sorry, but your booking #%d was cancelled.
                 Reason: %s
                 """.formatted(event.bookingId(), event.reason());
-        sendEmail("customer@example.com", "Booking Cancelled: #" + event.bookingId(), messageBody);
+        sendEmail(event.customerEmail(), "Booking Cancelled: #" + event.bookingId(), messageBody);
     }
 
     private void sendEmail(String to, String subject, String text) {

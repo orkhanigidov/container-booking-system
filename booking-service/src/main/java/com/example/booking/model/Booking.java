@@ -17,6 +17,7 @@ public class Booking {
     private Long id;
 
     private String customerId;
+    private String customerEmail;
     private String shipId;
     private int containerCount;
 

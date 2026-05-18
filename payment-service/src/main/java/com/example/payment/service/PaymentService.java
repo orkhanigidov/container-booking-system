@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -21,13 +21,12 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentEventProducer producer;
-    private final Random random = new Random();
 
     @Value("${app.payment.failure-rate:0.2}")
     private double failureRate;
 
     public void process(InventoryReservedEvent event) {
-        boolean shouldFail = random.nextDouble() < failureRate;
+        boolean shouldFail = ThreadLocalRandom.current().nextDouble() < failureRate;
 
         var payment = new Payment();
         payment.setBookingId(event.bookingId());

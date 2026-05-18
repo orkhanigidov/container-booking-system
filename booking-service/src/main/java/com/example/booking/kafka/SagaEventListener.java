@@ -9,7 +9,6 @@ import com.example.booking.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class SagaEventListener {
 
     private final BookingService bookingService;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final BookingEventProducer producer;
 
     @KafkaListener(topics = KafkaTopics.INVENTORY_FAILED, groupId = "booking-service")
     public void onInventoryFailed(InventoryFailedEvent event) {
@@ -36,10 +35,6 @@ public class SagaEventListener {
     public void onPaymentFailed(PaymentFailedEvent event) {
         log.warn("Payment failed for bookingId={}. Starting compensation.", event.bookingId());
         bookingService.updateStatus(event.bookingId(), BookingStatus.CANCELLED);
-
-        kafkaTemplate.send(KafkaTopics.INVENTORY_RELEASE,
-                String.valueOf(event.bookingId()),
-                new InventoryReleaseEvent(event.bookingId(), event.shipId(), event.containerCount())
-        );
+        producer.sendInventoryRelease(new InventoryReleaseEvent(event.bookingId(), event.shipId(), event.containerCount()));
     }
 }

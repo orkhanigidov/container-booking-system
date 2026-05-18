@@ -1,6 +1,7 @@
 package com.example.booking.kafka;
 
 import com.example.booking.event.BookingCreatedEvent;
+import com.example.booking.event.InventoryReleaseEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,5 +17,10 @@ public class BookingEventProducer {
     public void sendBookingCreated(BookingCreatedEvent event) {
         log.info("Sending booking.created event for bookingId={}", event.bookingId());
         kafkaTemplate.send(KafkaTopics.BOOKING_CREATED, String.valueOf(event.bookingId()), event);
+    }
+
+    public void sendInventoryRelease(InventoryReleaseEvent event) {
+        log.info("Sending inventory.release for bookingId={}", event.bookingId());
+        kafkaTemplate.send(KafkaTopics.INVENTORY_RELEASE, String.valueOf(event.bookingId()), event);
     }
 }

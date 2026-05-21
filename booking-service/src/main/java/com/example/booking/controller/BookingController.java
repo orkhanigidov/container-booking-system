@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Invalid request payload"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public BookingResponse create(@RequestBody BookingRequest request) {
+    public BookingResponse create(@Valid @RequestBody BookingRequest request) {
         return bookingService.create(request);
     }
 

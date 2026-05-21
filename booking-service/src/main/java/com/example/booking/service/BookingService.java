@@ -3,6 +3,7 @@ package com.example.booking.service;
 import com.example.booking.dto.BookingRequest;
 import com.example.booking.dto.BookingResponse;
 import com.example.booking.event.BookingCreatedEvent;
+import com.example.booking.exception.BookingNotFoundException;
 import com.example.booking.kafka.BookingEventProducer;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
@@ -39,9 +40,9 @@ public class BookingService {
     }
 
     public BookingResponse getById(Long id) {
-        Booking booking = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found: " + id));
-        return toResponse(booking);
+        return repository.findById(id)
+                .map(this::toResponse)
+                .orElseThrow(() -> new BookingNotFoundException(id));
     }
 
     public List<BookingResponse> getByCustomer(String customerId) {
@@ -53,7 +54,7 @@ public class BookingService {
 
     public void updateStatus(Long id, BookingStatus status) {
         Booking booking = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found: " + id));
+                .orElseThrow(() -> new BookingNotFoundException(id));
         booking.setStatus(status);
         repository.save(booking);
     }

@@ -19,4 +19,10 @@ public class GlobalExceptionHandler {
         return ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNotFound(BookingNotFoundException ex) {
+        return Map.of("error", ex.getMessage());
+    }
 }
